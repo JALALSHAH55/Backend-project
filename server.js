@@ -18,11 +18,6 @@ app.get("/", (req,res)=>{
     res.status(200).sendFile(path.join(__dirname, "views/index.html"))
 })
 
-app.route("/showProducts").get( function(req,res){
-    res.status(200).render('products', {products})
-})
-
-
 app.use('/api',productsRouter );
 
 app.listen(PORT, ()=>console.log(`Server is running at port no : ${PORT}`));

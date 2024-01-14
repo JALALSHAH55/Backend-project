@@ -7,10 +7,12 @@ router.post('/products',productController.addProduct)
 
 router.route('/products').get(productController.get)
 
-router.route('/products/:productIndex').get(productController.getSingleProduct)
+router.route('/products/:productId').get(productController.getSingleProduct)
 
-router.route('/products/:productIndex').put(productController.changeProduct);
+router.route('/showProducts').get(productController.showProducts)
+
+router.route('/products/:productId').put(productController.changeProduct);
 //delete.
-router.route('/products/:productIndex').delete(productController.deleteProduct);
+router.route('/products/:productId').delete(productController.deleteProduct);
 
 module.exports = router;
