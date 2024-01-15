@@ -1,13 +1,15 @@
- const mysql = require('mysql2');
+ const {Sequelize} =require('sequelize');
+ const sequelize = new Sequelize('fbbc', 'root', 'shahjalal555', {
+  host: 'localhost',
+  dialect: 'mysql'
+ });
 
- function connection(){
-   const connection = mysql.createConnection({
-        host: 'localhost',
-        user: 'root',
-        password: 'shahjalal555',
-        database: 'fbbc'
-    })
-    return connection.promise();
- }
+ sequelize.authenticate().then(()=>{
+        console.log('connected successfully');
+ }).catch((err)=>{
+       console.log('err');
+ })
 
- module.exports = connection;
+
+
+ module.exports = sequelize;

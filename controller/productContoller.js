@@ -1,14 +1,20 @@
-const { name } = require('ejs');
 const connection = require('../models/index');
+const Products = require('../models/product');
 module.exports = {
     addProduct: async function (req, res) {
         try {
-            const { name, price } = req.body;
+            const { productName, price } = req.body;
             const date = '2024-01-01';
-            const dbconnection = await connection();
-            await dbconnection.execute(`INSERT INTO products (name, price, createdAt, updatedAt) VALUES ("${name}",
-            ${price}, "${date}", "${date}")`);
-            res.status(201).send("Product added successfully")
+            const product = await Products.create({
+                name: productName,
+                price,
+                createdAt: date,
+                updatedAt: date,
+            })
+             res.status(201).send({
+                message: "product added succesfully",
+                product,
+             });
         } catch (err) {
             console.log(err);
             res.status(500).send(err.message || 'something went wrong')
@@ -18,9 +24,13 @@ module.exports = {
         try {
             let { productId } = req.params;
             productId = Number(productId);
-            const dbconnection = await connection();
-            const [product] = await dbconnection.execute(`SELECT * from products where id = ${productId}`);
-            if (product.length === 0) {
+            // const product = await Products.findOne({
+            //     where: {
+            //         id: productId,
+            //     }
+            // })
+            const product = await Products.findByPk(productId);
+            if (!product) {
                 return res.status(404).send("product not found")
             }
             res.status(201).send(product);
@@ -31,8 +41,11 @@ module.exports = {
     },
     get: async (req, res, next) => {
         try {
-            const dbconnection = await connection();
-            const [products] = await dbconnection.execute('SELECT * FROM products');
+          const products = await Products.findAll({
+            where: {
+                name: 'watch',
+            }
+          });
             res.status(200).send(products)
         } catch (err) {
             console.log(err);
@@ -48,15 +61,16 @@ module.exports = {
             }
             productId =Number(productId);
             const updateDate = new Date().toISOString().slice(0,10)
-            console.log(updateDate);
-
-            const dbconnection = await connection();
-            const [product] = await dbconnection.execute(`UPDATE products SET name ="${name}", price= ${price}, updatedAt = "${updateDate}"
-             WHERE id = ${productId}`,
-             );
-            if (product.length === 0) {
+            let product = await Products.findByPk(productId);
+            if (!product) {
                 return res.status(404).send("product not found")
             }
+            product = await product.update({
+                name,
+                price,
+                createdAt: updateDate,
+                updatedAt: updateDate,
+            });
             res.status(201).send(product);
         } catch (err) {
             console.log(err);
@@ -68,9 +82,11 @@ module.exports = {
             let { productId } = req.params; 
 
             productId =Number(productId);
-
-            const dbconnection = await connection();
-            const [product] = await dbconnection.execute(`DELETE  from products where id = ${productId}`,);
+            await Products.destroy({
+                where:{
+                    id: productId,
+                }
+            })
             res.status(201).send('product deleted successfully');
         } catch (err) {
             console.log(err);
