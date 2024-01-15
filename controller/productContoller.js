@@ -63,14 +63,19 @@ module.exports = {
             res.status(500).send(err.message || 'something went wrong')
         }
     },
-    deleteProduct: (req, res) => {
-        let { productIndex } = req.params;
-        productIndex = Number(productIndex);
-        if (!products[productIndex]) {
-            return res.status(404).send("Product not found")
+    deleteProduct: async (req, res) => {
+        try {
+            let { productId } = req.params; 
+
+            productId =Number(productId);
+
+            const dbconnection = await connection();
+            const [product] = await dbconnection.execute(`DELETE  from products where id = ${productId}`,);
+            res.status(201).send('product deleted successfully');
+        } catch (err) {
+            console.log(err);
+            res.status(500).send(err.message || 'something went wrong')
         }
-        products.splice(productIndex, 1);
-        res.status(200).send("Product Deleted Successfully!")
     },
 
     showProducts: async function (req, res) {
