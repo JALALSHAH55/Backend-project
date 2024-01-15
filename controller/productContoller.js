@@ -1,3 +1,4 @@
+const { name } = require('ejs');
 const connection = require('../models/index');
 module.exports = {
     addProduct: async function (req, res) {
@@ -38,16 +39,29 @@ module.exports = {
             res.status(500).send(err.message || 'something went wrong')
         }
     },
-    changeProduct: (req, res) => {
-        let { productIndex } = req.params;
-        const { name, price } = req.body;
-        productIndex = Number(productIndex);
-        if (!products[productIndex]) {
-            return res.status(404).send("Product not found")
+    changeProduct: async (req, res) => {
+         try {
+            let { productId } = req.params;
+            const {name, price} = req.body; 
+            if(!name || !price){
+               return res.status(409).send("Required fields cannot be empty");
+            }
+            productId =Number(productId);
+            const updateDate = new Date().toISOString().slice(0,10)
+            console.log(updateDate);
+
+            const dbconnection = await connection();
+            const [product] = await dbconnection.execute(`UPDATE products SET name ="${name}", price= ${price}, updatedAt = "${updateDate}"
+             WHERE id = ${productId}`,
+             );
+            if (product.length === 0) {
+                return res.status(404).send("product not found")
+            }
+            res.status(201).send(product);
+        } catch (err) {
+            console.log(err);
+            res.status(500).send(err.message || 'something went wrong')
         }
-        products[productIndex].name = name;
-        products[productIndex].price = price;
-        res.status(200).send(products[productIndex])
     },
     deleteProduct: (req, res) => {
         let { productIndex } = req.params;
