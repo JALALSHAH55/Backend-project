@@ -1,7 +1,8 @@
 const express = require("express");
 const path = require("path");
 const products = require('./models/index') //models
-const productsRouter = require('./Routes/productRoutes')
+const productsRouter = require('./Routes/productRoutes');
+const customerRouter = require("./Routes/customerRoutes");
 
 const PORT = 4000;
 const app = express();
@@ -19,5 +20,5 @@ app.get("/", (req,res)=>{
 })
 
 app.use('/api',productsRouter );
-
+app.use('/api', customerRouter)
 app.listen(PORT, ()=>console.log(`Server is running at port no : ${PORT}`));

@@ -4,7 +4,7 @@ const moment = require("moment");
 
 
 module.exports = (sequelize,DataTypes)=>{
-    const Product = sequelize.define("products",{
+    const Customer = sequelize.define("customers",{
         id:{
             type: DataTypes.INTEGER,
             allowNull: false,
@@ -17,15 +17,15 @@ module.exports = (sequelize,DataTypes)=>{
             allowNull: false,
         },
     
-        price:{
+        email:{
             type: DataTypes.STRING,
             allowNull: false,
+            unique: true,
         },
-        quantity:{
-            type: DataTypes.INTEGER,
-            allowNull: true,
-            defaultValue: 0
-
+        password:{
+            type: DataTypes.STRING,
+            allowNull: false,
+            
         },
         createdAt:{
             type: DataTypes.INTEGER,
@@ -38,13 +38,13 @@ module.exports = (sequelize,DataTypes)=>{
         },
     
     });
-    Product.beforeCreate((product)=>{
-        product.dataValues.createdAt = moment().unix();
-        product.dataValues.updatedAt = moment().unix();
+    Customer.beforeCreate((customer)=>{
+        customer.dataValues.createdAt = moment().unix();
+        customer.dataValues.updatedAt = moment().unix();
     });
-    Product.beforeUpdate((product)=>{
-         product.dataValues.updatedAt = moment().unix();
+    Customer.beforeUpdate((customer)=>{
+         customer.dataValues.updatedAt = moment().unix();
     });     
-       return Product;    
+       return Customer;    
 }
 

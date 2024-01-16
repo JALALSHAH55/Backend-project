@@ -5,12 +5,10 @@ module.exports = {
     addProduct: async function (req, res) {
         try {
             const { productName, price } = req.body;
-            const date = '2024-01-01';
+            console.log(productName,price);
             const product = await Products.create({
                 name: productName,
                 price,
-                createdAt: date,
-                updatedAt: date,
             })
              res.status(201).send({
                 message: "product added succesfully",
