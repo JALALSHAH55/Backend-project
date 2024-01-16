@@ -1,5 +1,6 @@
-const connection = require('../models/index');
-const Products = require('../models/product');
+
+const {products: Products} = require('../models');
+const {Op} = require("sequelize");
 module.exports = {
     addProduct: async function (req, res) {
         try {
